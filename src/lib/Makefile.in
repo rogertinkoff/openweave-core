@@ -631,6 +631,8 @@ am__libWeave_a_SOURCES_DIST =  \
 	@top_builddir@/src/lib/profiles/weave-tunneling/WeaveTunnelCommon.cpp \
 	@top_builddir@/src/lib/profiles/weave-tunneling/WeaveTunnelConnectionMgr.cpp \
 	@top_builddir@/src/lib/profiles/weave-tunneling/WeaveTunnelControl.cpp \
+	@top_builddir@/src/lib/profiles/locale/LocaleSettingsTrait.cpp \
+	@top_builddir@/src/lib/profiles/locale/MockSinkTrait.cpp \
 	@top_builddir@/src/lib/profiles/data-management/Legacy/Binding.cpp \
 	@top_builddir@/src/lib/profiles/data-management/Legacy/ClientNotifier.cpp \
 	@top_builddir@/src/lib/profiles/data-management/Legacy/DMClient.cpp \
@@ -840,6 +842,8 @@ am__objects_23 = @top_builddir@/src/lib/profiles/bulk-data-transfer/libWeave_a-B
 	@top_builddir@/src/lib/profiles/weave-tunneling/libWeave_a-WeaveTunnelCommon.$(OBJEXT) \
 	@top_builddir@/src/lib/profiles/weave-tunneling/libWeave_a-WeaveTunnelConnectionMgr.$(OBJEXT) \
 	@top_builddir@/src/lib/profiles/weave-tunneling/libWeave_a-WeaveTunnelControl.$(OBJEXT) \
+	@top_builddir@/src/lib/profiles/locale/libWeave_a-LocaleSettingsTrait.$(OBJEXT) \
+	@top_builddir@/src/lib/profiles/locale/libWeave_a-MockSinkTrait.$(OBJEXT) \
 	$(am__objects_21) $(am__objects_22)
 am__objects_24 =  \
 	@top_builddir@/src/warm/libWeave_a-WarmCore.$(OBJEXT)
@@ -1355,6 +1359,8 @@ nl_WeaveProfiles_sources = @top_builddir@/src/lib/profiles/bulk-data-transfer/Bu
 	@top_builddir@/src/lib/profiles/weave-tunneling/WeaveTunnelCommon.cpp \
 	@top_builddir@/src/lib/profiles/weave-tunneling/WeaveTunnelConnectionMgr.cpp \
 	@top_builddir@/src/lib/profiles/weave-tunneling/WeaveTunnelControl.cpp \
+	@top_builddir@/src/lib/profiles/locale/LocaleSettingsTrait.cpp \
+	@top_builddir@/src/lib/profiles/locale/MockSinkTrait.cpp \
 	$(NULL) $(am__append_12) $(am__append_13)
 nl_Warm_sources = \
     @top_builddir@/src/warm/WarmCore.cpp                     \
@@ -2166,6 +2172,18 @@ clean-libLIBRARIES:
 	@top_builddir@/src/lib/profiles/weave-tunneling/$(DEPDIR)/$(am__dirstamp)
 @top_builddir@/src/lib/profiles/weave-tunneling/libWeave_a-WeaveTunnelControl.$(OBJEXT): @top_builddir@/src/lib/profiles/weave-tunneling/$(am__dirstamp) \
 	@top_builddir@/src/lib/profiles/weave-tunneling/$(DEPDIR)/$(am__dirstamp)
+@top_builddir@/src/lib/profiles/locale/$(am__dirstamp):
+	@$(MKDIR_P) @top_builddir@/src/lib/profiles/locale
+	@: > @top_builddir@/src/lib/profiles/locale/$(am__dirstamp)
+@top_builddir@/src/lib/profiles/locale/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) @top_builddir@/src/lib/profiles/locale/$(DEPDIR)
+	@: > @top_builddir@/src/lib/profiles/locale/$(DEPDIR)/$(am__dirstamp)
+@top_builddir@/src/lib/profiles/locale/libWeave_a-LocaleSettingsTrait.$(OBJEXT):  \
+	@top_builddir@/src/lib/profiles/locale/$(am__dirstamp) \
+	@top_builddir@/src/lib/profiles/locale/$(DEPDIR)/$(am__dirstamp)
+@top_builddir@/src/lib/profiles/locale/libWeave_a-MockSinkTrait.$(OBJEXT):  \
+	@top_builddir@/src/lib/profiles/locale/$(am__dirstamp) \
+	@top_builddir@/src/lib/profiles/locale/$(DEPDIR)/$(am__dirstamp)
 @top_builddir@/src/lib/profiles/data-management/Legacy/$(am__dirstamp):
 	@$(MKDIR_P) @top_builddir@/src/lib/profiles/data-management/Legacy
 	@: > @top_builddir@/src/lib/profiles/data-management/Legacy/$(am__dirstamp)
@@ -2218,6 +2236,7 @@ mostlyclean-compile:
 	-rm -f @top_builddir@/src/lib/profiles/echo/Next/*.$(OBJEXT)
 	-rm -f @top_builddir@/src/lib/profiles/fabric-provisioning/*.$(OBJEXT)
 	-rm -f @top_builddir@/src/lib/profiles/heartbeat/*.$(OBJEXT)
+	-rm -f @top_builddir@/src/lib/profiles/locale/*.$(OBJEXT)
 	-rm -f @top_builddir@/src/lib/profiles/network-provisioning/*.$(OBJEXT)
 	-rm -f @top_builddir@/src/lib/profiles/security/*.$(OBJEXT)
 	-rm -f @top_builddir@/src/lib/profiles/service-directory/*.$(OBJEXT)
@@ -2329,6 +2348,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@@top_builddir@/src/lib/profiles/fabric-provisioning/$(DEPDIR)/libWeave_a-FabricProvisioning.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@@top_builddir@/src/lib/profiles/heartbeat/$(DEPDIR)/libWeave_a-WeaveHeartbeatReceiver.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@@top_builddir@/src/lib/profiles/heartbeat/$(DEPDIR)/libWeave_a-WeaveHeartbeatSender.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@@top_builddir@/src/lib/profiles/locale/$(DEPDIR)/libWeave_a-LocaleSettingsTrait.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@@top_builddir@/src/lib/profiles/locale/$(DEPDIR)/libWeave_a-MockSinkTrait.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@@top_builddir@/src/lib/profiles/network-provisioning/$(DEPDIR)/libWeave_a-NetworkInfo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@@top_builddir@/src/lib/profiles/network-provisioning/$(DEPDIR)/libWeave_a-NetworkProvisioning.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@@top_builddir@/src/lib/profiles/security/$(DEPDIR)/libWeave_a-ApplicationKeysTrait.Po@am__quote@
@@ -4988,6 +5009,34 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libWeave_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o @top_builddir@/src/lib/profiles/weave-tunneling/libWeave_a-WeaveTunnelControl.obj `if test -f '@top_builddir@/src/lib/profiles/weave-tunneling/WeaveTunnelControl.cpp'; then $(CYGPATH_W) '@top_builddir@/src/lib/profiles/weave-tunneling/WeaveTunnelControl.cpp'; else $(CYGPATH_W) '$(srcdir)/@top_builddir@/src/lib/profiles/weave-tunneling/WeaveTunnelControl.cpp'; fi`
 
+@top_builddir@/src/lib/profiles/locale/libWeave_a-LocaleSettingsTrait.o: @top_builddir@/src/lib/profiles/locale/LocaleSettingsTrait.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libWeave_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT @top_builddir@/src/lib/profiles/locale/libWeave_a-LocaleSettingsTrait.o -MD -MP -MF @top_builddir@/src/lib/profiles/locale/$(DEPDIR)/libWeave_a-LocaleSettingsTrait.Tpo -c -o @top_builddir@/src/lib/profiles/locale/libWeave_a-LocaleSettingsTrait.o `test -f '@top_builddir@/src/lib/profiles/locale/LocaleSettingsTrait.cpp' || echo '$(srcdir)/'`@top_builddir@/src/lib/profiles/locale/LocaleSettingsTrait.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) @top_builddir@/src/lib/profiles/locale/$(DEPDIR)/libWeave_a-LocaleSettingsTrait.Tpo @top_builddir@/src/lib/profiles/locale/$(DEPDIR)/libWeave_a-LocaleSettingsTrait.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='@top_builddir@/src/lib/profiles/locale/LocaleSettingsTrait.cpp' object='@top_builddir@/src/lib/profiles/locale/libWeave_a-LocaleSettingsTrait.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libWeave_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o @top_builddir@/src/lib/profiles/locale/libWeave_a-LocaleSettingsTrait.o `test -f '@top_builddir@/src/lib/profiles/locale/LocaleSettingsTrait.cpp' || echo '$(srcdir)/'`@top_builddir@/src/lib/profiles/locale/LocaleSettingsTrait.cpp
+
+@top_builddir@/src/lib/profiles/locale/libWeave_a-LocaleSettingsTrait.obj: @top_builddir@/src/lib/profiles/locale/LocaleSettingsTrait.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libWeave_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT @top_builddir@/src/lib/profiles/locale/libWeave_a-LocaleSettingsTrait.obj -MD -MP -MF @top_builddir@/src/lib/profiles/locale/$(DEPDIR)/libWeave_a-LocaleSettingsTrait.Tpo -c -o @top_builddir@/src/lib/profiles/locale/libWeave_a-LocaleSettingsTrait.obj `if test -f '@top_builddir@/src/lib/profiles/locale/LocaleSettingsTrait.cpp'; then $(CYGPATH_W) '@top_builddir@/src/lib/profiles/locale/LocaleSettingsTrait.cpp'; else $(CYGPATH_W) '$(srcdir)/@top_builddir@/src/lib/profiles/locale/LocaleSettingsTrait.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) @top_builddir@/src/lib/profiles/locale/$(DEPDIR)/libWeave_a-LocaleSettingsTrait.Tpo @top_builddir@/src/lib/profiles/locale/$(DEPDIR)/libWeave_a-LocaleSettingsTrait.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='@top_builddir@/src/lib/profiles/locale/LocaleSettingsTrait.cpp' object='@top_builddir@/src/lib/profiles/locale/libWeave_a-LocaleSettingsTrait.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libWeave_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o @top_builddir@/src/lib/profiles/locale/libWeave_a-LocaleSettingsTrait.obj `if test -f '@top_builddir@/src/lib/profiles/locale/LocaleSettingsTrait.cpp'; then $(CYGPATH_W) '@top_builddir@/src/lib/profiles/locale/LocaleSettingsTrait.cpp'; else $(CYGPATH_W) '$(srcdir)/@top_builddir@/src/lib/profiles/locale/LocaleSettingsTrait.cpp'; fi`
+
+@top_builddir@/src/lib/profiles/locale/libWeave_a-MockSinkTrait.o: @top_builddir@/src/lib/profiles/locale/MockSinkTrait.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libWeave_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT @top_builddir@/src/lib/profiles/locale/libWeave_a-MockSinkTrait.o -MD -MP -MF @top_builddir@/src/lib/profiles/locale/$(DEPDIR)/libWeave_a-MockSinkTrait.Tpo -c -o @top_builddir@/src/lib/profiles/locale/libWeave_a-MockSinkTrait.o `test -f '@top_builddir@/src/lib/profiles/locale/MockSinkTrait.cpp' || echo '$(srcdir)/'`@top_builddir@/src/lib/profiles/locale/MockSinkTrait.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) @top_builddir@/src/lib/profiles/locale/$(DEPDIR)/libWeave_a-MockSinkTrait.Tpo @top_builddir@/src/lib/profiles/locale/$(DEPDIR)/libWeave_a-MockSinkTrait.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='@top_builddir@/src/lib/profiles/locale/MockSinkTrait.cpp' object='@top_builddir@/src/lib/profiles/locale/libWeave_a-MockSinkTrait.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libWeave_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o @top_builddir@/src/lib/profiles/locale/libWeave_a-MockSinkTrait.o `test -f '@top_builddir@/src/lib/profiles/locale/MockSinkTrait.cpp' || echo '$(srcdir)/'`@top_builddir@/src/lib/profiles/locale/MockSinkTrait.cpp
+
+@top_builddir@/src/lib/profiles/locale/libWeave_a-MockSinkTrait.obj: @top_builddir@/src/lib/profiles/locale/MockSinkTrait.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libWeave_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT @top_builddir@/src/lib/profiles/locale/libWeave_a-MockSinkTrait.obj -MD -MP -MF @top_builddir@/src/lib/profiles/locale/$(DEPDIR)/libWeave_a-MockSinkTrait.Tpo -c -o @top_builddir@/src/lib/profiles/locale/libWeave_a-MockSinkTrait.obj `if test -f '@top_builddir@/src/lib/profiles/locale/MockSinkTrait.cpp'; then $(CYGPATH_W) '@top_builddir@/src/lib/profiles/locale/MockSinkTrait.cpp'; else $(CYGPATH_W) '$(srcdir)/@top_builddir@/src/lib/profiles/locale/MockSinkTrait.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) @top_builddir@/src/lib/profiles/locale/$(DEPDIR)/libWeave_a-MockSinkTrait.Tpo @top_builddir@/src/lib/profiles/locale/$(DEPDIR)/libWeave_a-MockSinkTrait.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='@top_builddir@/src/lib/profiles/locale/MockSinkTrait.cpp' object='@top_builddir@/src/lib/profiles/locale/libWeave_a-MockSinkTrait.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libWeave_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o @top_builddir@/src/lib/profiles/locale/libWeave_a-MockSinkTrait.obj `if test -f '@top_builddir@/src/lib/profiles/locale/MockSinkTrait.cpp'; then $(CYGPATH_W) '@top_builddir@/src/lib/profiles/locale/MockSinkTrait.cpp'; else $(CYGPATH_W) '$(srcdir)/@top_builddir@/src/lib/profiles/locale/MockSinkTrait.cpp'; fi`
+
 @top_builddir@/src/lib/profiles/data-management/Legacy/libWeave_a-Binding.o: @top_builddir@/src/lib/profiles/data-management/Legacy/Binding.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libWeave_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT @top_builddir@/src/lib/profiles/data-management/Legacy/libWeave_a-Binding.o -MD -MP -MF @top_builddir@/src/lib/profiles/data-management/Legacy/$(DEPDIR)/libWeave_a-Binding.Tpo -c -o @top_builddir@/src/lib/profiles/data-management/Legacy/libWeave_a-Binding.o `test -f '@top_builddir@/src/lib/profiles/data-management/Legacy/Binding.cpp' || echo '$(srcdir)/'`@top_builddir@/src/lib/profiles/data-management/Legacy/Binding.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) @top_builddir@/src/lib/profiles/data-management/Legacy/$(DEPDIR)/libWeave_a-Binding.Tpo @top_builddir@/src/lib/profiles/data-management/Legacy/$(DEPDIR)/libWeave_a-Binding.Po
@@ -5251,6 +5300,8 @@ distclean-generic:
 	-rm -f @top_builddir@/src/lib/profiles/fabric-provisioning/$(am__dirstamp)
 	-rm -f @top_builddir@/src/lib/profiles/heartbeat/$(DEPDIR)/$(am__dirstamp)
 	-rm -f @top_builddir@/src/lib/profiles/heartbeat/$(am__dirstamp)
+	-rm -f @top_builddir@/src/lib/profiles/locale/$(DEPDIR)/$(am__dirstamp)
+	-rm -f @top_builddir@/src/lib/profiles/locale/$(am__dirstamp)
 	-rm -f @top_builddir@/src/lib/profiles/network-provisioning/$(DEPDIR)/$(am__dirstamp)
 	-rm -f @top_builddir@/src/lib/profiles/network-provisioning/$(am__dirstamp)
 	-rm -f @top_builddir@/src/lib/profiles/security/$(DEPDIR)/$(am__dirstamp)
@@ -5297,7 +5348,7 @@ clean-am: clean-generic clean-libLIBRARIES clean-libtool \
 	mostlyclean-am
 
 distclean: distclean-am
-	-rm -rf @top_builddir@/src/ble/$(DEPDIR) @top_builddir@/src/device-manager/$(DEPDIR) @top_builddir@/src/inet/$(DEPDIR) @top_builddir@/src/lib/core/$(DEPDIR) @top_builddir@/src/lib/profiles/bulk-data-transfer/$(DEPDIR) @top_builddir@/src/lib/profiles/bulk-data-transfer/Development/$(DEPDIR) @top_builddir@/src/lib/profiles/common/$(DEPDIR) @top_builddir@/src/lib/profiles/data-management/Current/$(DEPDIR) @top_builddir@/src/lib/profiles/data-management/Legacy/$(DEPDIR) @top_builddir@/src/lib/profiles/device-control/$(DEPDIR) @top_builddir@/src/lib/profiles/device-description/$(DEPDIR) @top_builddir@/src/lib/profiles/echo/Current/$(DEPDIR) @top_builddir@/src/lib/profiles/echo/Next/$(DEPDIR) @top_builddir@/src/lib/profiles/fabric-provisioning/$(DEPDIR) @top_builddir@/src/lib/profiles/heartbeat/$(DEPDIR) @top_builddir@/src/lib/profiles/network-provisioning/$(DEPDIR) @top_builddir@/src/lib/profiles/security/$(DEPDIR) @top_builddir@/src/lib/profiles/service-directory/$(DEPDIR) @top_builddir@/src/lib/profiles/service-provisioning/$(DEPDIR) @top_builddir@/src/lib/profiles/software-update/$(DEPDIR) @top_builddir@/src/lib/profiles/status-report/$(DEPDIR) @top_builddir@/src/lib/profiles/time/$(DEPDIR) @top_builddir@/src/lib/profiles/token-pairing/$(DEPDIR) @top_builddir@/src/lib/profiles/vendor/nestlabs/dropcam-legacy-pairing/$(DEPDIR) @top_builddir@/src/lib/profiles/vendor/nestlabs/thermostat/$(DEPDIR) @top_builddir@/src/lib/profiles/weave-tunneling/$(DEPDIR) @top_builddir@/src/lib/support/$(DEPDIR) @top_builddir@/src/lib/support/crypto/$(DEPDIR) @top_builddir@/src/lib/support/logging/$(DEPDIR) @top_builddir@/src/lib/support/pairing-code/$(DEPDIR) @top_builddir@/src/lib/support/verhoeff/$(DEPDIR) @top_builddir@/src/system/$(DEPDIR) @top_builddir@/src/warm/$(DEPDIR)
+	-rm -rf @top_builddir@/src/ble/$(DEPDIR) @top_builddir@/src/device-manager/$(DEPDIR) @top_builddir@/src/inet/$(DEPDIR) @top_builddir@/src/lib/core/$(DEPDIR) @top_builddir@/src/lib/profiles/bulk-data-transfer/$(DEPDIR) @top_builddir@/src/lib/profiles/bulk-data-transfer/Development/$(DEPDIR) @top_builddir@/src/lib/profiles/common/$(DEPDIR) @top_builddir@/src/lib/profiles/data-management/Current/$(DEPDIR) @top_builddir@/src/lib/profiles/data-management/Legacy/$(DEPDIR) @top_builddir@/src/lib/profiles/device-control/$(DEPDIR) @top_builddir@/src/lib/profiles/device-description/$(DEPDIR) @top_builddir@/src/lib/profiles/echo/Current/$(DEPDIR) @top_builddir@/src/lib/profiles/echo/Next/$(DEPDIR) @top_builddir@/src/lib/profiles/fabric-provisioning/$(DEPDIR) @top_builddir@/src/lib/profiles/heartbeat/$(DEPDIR) @top_builddir@/src/lib/profiles/locale/$(DEPDIR) @top_builddir@/src/lib/profiles/network-provisioning/$(DEPDIR) @top_builddir@/src/lib/profiles/security/$(DEPDIR) @top_builddir@/src/lib/profiles/service-directory/$(DEPDIR) @top_builddir@/src/lib/profiles/service-provisioning/$(DEPDIR) @top_builddir@/src/lib/profiles/software-update/$(DEPDIR) @top_builddir@/src/lib/profiles/status-report/$(DEPDIR) @top_builddir@/src/lib/profiles/time/$(DEPDIR) @top_builddir@/src/lib/profiles/token-pairing/$(DEPDIR) @top_builddir@/src/lib/profiles/vendor/nestlabs/dropcam-legacy-pairing/$(DEPDIR) @top_builddir@/src/lib/profiles/vendor/nestlabs/thermostat/$(DEPDIR) @top_builddir@/src/lib/profiles/weave-tunneling/$(DEPDIR) @top_builddir@/src/lib/support/$(DEPDIR) @top_builddir@/src/lib/support/crypto/$(DEPDIR) @top_builddir@/src/lib/support/logging/$(DEPDIR) @top_builddir@/src/lib/support/pairing-code/$(DEPDIR) @top_builddir@/src/lib/support/verhoeff/$(DEPDIR) @top_builddir@/src/system/$(DEPDIR) @top_builddir@/src/warm/$(DEPDIR)
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -5343,7 +5394,7 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-am
-	-rm -rf @top_builddir@/src/ble/$(DEPDIR) @top_builddir@/src/device-manager/$(DEPDIR) @top_builddir@/src/inet/$(DEPDIR) @top_builddir@/src/lib/core/$(DEPDIR) @top_builddir@/src/lib/profiles/bulk-data-transfer/$(DEPDIR) @top_builddir@/src/lib/profiles/bulk-data-transfer/Development/$(DEPDIR) @top_builddir@/src/lib/profiles/common/$(DEPDIR) @top_builddir@/src/lib/profiles/data-management/Current/$(DEPDIR) @top_builddir@/src/lib/profiles/data-management/Legacy/$(DEPDIR) @top_builddir@/src/lib/profiles/device-control/$(DEPDIR) @top_builddir@/src/lib/profiles/device-description/$(DEPDIR) @top_builddir@/src/lib/profiles/echo/Current/$(DEPDIR) @top_builddir@/src/lib/profiles/echo/Next/$(DEPDIR) @top_builddir@/src/lib/profiles/fabric-provisioning/$(DEPDIR) @top_builddir@/src/lib/profiles/heartbeat/$(DEPDIR) @top_builddir@/src/lib/profiles/network-provisioning/$(DEPDIR) @top_builddir@/src/lib/profiles/security/$(DEPDIR) @top_builddir@/src/lib/profiles/service-directory/$(DEPDIR) @top_builddir@/src/lib/profiles/service-provisioning/$(DEPDIR) @top_builddir@/src/lib/profiles/software-update/$(DEPDIR) @top_builddir@/src/lib/profiles/status-report/$(DEPDIR) @top_builddir@/src/lib/profiles/time/$(DEPDIR) @top_builddir@/src/lib/profiles/token-pairing/$(DEPDIR) @top_builddir@/src/lib/profiles/vendor/nestlabs/dropcam-legacy-pairing/$(DEPDIR) @top_builddir@/src/lib/profiles/vendor/nestlabs/thermostat/$(DEPDIR) @top_builddir@/src/lib/profiles/weave-tunneling/$(DEPDIR) @top_builddir@/src/lib/support/$(DEPDIR) @top_builddir@/src/lib/support/crypto/$(DEPDIR) @top_builddir@/src/lib/support/logging/$(DEPDIR) @top_builddir@/src/lib/support/pairing-code/$(DEPDIR) @top_builddir@/src/lib/support/verhoeff/$(DEPDIR) @top_builddir@/src/system/$(DEPDIR) @top_builddir@/src/warm/$(DEPDIR)
+	-rm -rf @top_builddir@/src/ble/$(DEPDIR) @top_builddir@/src/device-manager/$(DEPDIR) @top_builddir@/src/inet/$(DEPDIR) @top_builddir@/src/lib/core/$(DEPDIR) @top_builddir@/src/lib/profiles/bulk-data-transfer/$(DEPDIR) @top_builddir@/src/lib/profiles/bulk-data-transfer/Development/$(DEPDIR) @top_builddir@/src/lib/profiles/common/$(DEPDIR) @top_builddir@/src/lib/profiles/data-management/Current/$(DEPDIR) @top_builddir@/src/lib/profiles/data-management/Legacy/$(DEPDIR) @top_builddir@/src/lib/profiles/device-control/$(DEPDIR) @top_builddir@/src/lib/profiles/device-description/$(DEPDIR) @top_builddir@/src/lib/profiles/echo/Current/$(DEPDIR) @top_builddir@/src/lib/profiles/echo/Next/$(DEPDIR) @top_builddir@/src/lib/profiles/fabric-provisioning/$(DEPDIR) @top_builddir@/src/lib/profiles/heartbeat/$(DEPDIR) @top_builddir@/src/lib/profiles/locale/$(DEPDIR) @top_builddir@/src/lib/profiles/network-provisioning/$(DEPDIR) @top_builddir@/src/lib/profiles/security/$(DEPDIR) @top_builddir@/src/lib/profiles/service-directory/$(DEPDIR) @top_builddir@/src/lib/profiles/service-provisioning/$(DEPDIR) @top_builddir@/src/lib/profiles/software-update/$(DEPDIR) @top_builddir@/src/lib/profiles/status-report/$(DEPDIR) @top_builddir@/src/lib/profiles/time/$(DEPDIR) @top_builddir@/src/lib/profiles/token-pairing/$(DEPDIR) @top_builddir@/src/lib/profiles/vendor/nestlabs/dropcam-legacy-pairing/$(DEPDIR) @top_builddir@/src/lib/profiles/vendor/nestlabs/thermostat/$(DEPDIR) @top_builddir@/src/lib/profiles/weave-tunneling/$(DEPDIR) @top_builddir@/src/lib/support/$(DEPDIR) @top_builddir@/src/lib/support/crypto/$(DEPDIR) @top_builddir@/src/lib/support/logging/$(DEPDIR) @top_builddir@/src/lib/support/pairing-code/$(DEPDIR) @top_builddir@/src/lib/support/verhoeff/$(DEPDIR) @top_builddir@/src/system/$(DEPDIR) @top_builddir@/src/warm/$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 

@@ -32,6 +32,8 @@
 #include <errno.h>
 #include <time.h>
 
+#include <Weave/Profiles/data-management/Current/WdmManagedNamespace.h>
+
 #include <Weave/Core/WeaveCore.h>
 #include <Weave/Support/Base64.h>
 #include <Weave/Support/CodeUtils.h>
@@ -42,8 +44,10 @@
 #include <Weave/Profiles/network-provisioning/NetworkProvisioning.h>
 #include <Weave/Profiles/service-provisioning/ServiceProvisioning.h>
 #include <Weave/Profiles/fabric-provisioning/FabricProvisioning.h>
+#include <Weave/Profiles/data-management/DataManagement.h>
 #include <Weave/Profiles/device-description/DeviceDescription.h>
 #include <Weave/Profiles/device-control/DeviceControl.h>
+#include <Weave/Profiles/locale/LocaleSettingsTrait.h>
 #include <Weave/Profiles/vendor/nestlabs/device-description/NestProductIdentifiers.hpp>
 #include <Weave/Profiles/security/WeaveSecurity.h>
 #include <Weave/Profiles/security/WeaveAccessToken.h>
@@ -58,12 +62,44 @@
 #include <Weave/Profiles/vendor/nestlabs/dropcam-legacy-pairing/DropcamLegacyPairing.h>
 
 namespace nl {
+    namespace Weave {
+        namespace Profiles {
+            namespace WeaveMakeManagedNamespaceIdentifier(DataManagement, kWeaveManagedNamespaceDesignation_Current) {
+
+            SubscriptionEngine * SubscriptionEngine::GetInstance()
+            {
+                static nl::Weave::Profiles::DataManagement::SubscriptionEngine gWdmSubscriptionEngine;
+                return &gWdmSubscriptionEngine;
+            }
+
+            namespace Platform {
+                // For unit tests, a dummy critical section is sufficient.
+                void CriticalSectionEnter()
+                {
+                    return;
+                }
+
+                void CriticalSectionExit()
+                {
+                    return;
+                }
+
+            } // Platform
+
+        } // WeaveMakeManagedNamespaceIdentifier(DataManagement, kWeaveManagedNamespaceDesignation_Current)
+    } // Profiles
+} // Weave
+} // nl
+
+namespace nl {
 namespace Weave {
 namespace DeviceManager {
 
 using namespace nl::Weave::Encoding;
 using namespace nl::Weave::Profiles;
+using namespace nl::Weave::Profiles::DataManagement;
 using namespace nl::Weave::Profiles::DeviceDescription;
+using namespace nl::Weave::Profiles::Locale;
 using namespace nl::Weave::Profiles::NetworkProvisioning;
 using namespace nl::Weave::Profiles::Security;
 using namespace nl::Weave::Profiles::ServiceProvisioning;
@@ -73,9 +109,12 @@ using namespace nl::Weave::Profiles::Vendor::Nestlabs::DropcamLegacyPairing;
 using namespace nl::Weave::Profiles::Vendor::Nestlabs::Thermostat;
 using namespace nl::Weave::TLV;
 
+const nl::Weave::ExchangeContext::Timeout kResponseTimeoutMsec = 15000;
+
 static bool IsProductWildcard(uint16_t productId);
 
 static const uint32_t ENUMERATED_NODES_LIST_INITIAL_SIZE = 256;
+
 
 WeaveDeviceManager *WeaveDeviceManager::sListeningDeviceMgr = NULL;
 
@@ -142,7 +181,6 @@ WEAVE_ERROR WeaveDeviceManager::Init(WeaveExchangeManager *exchangeMgr, WeaveSec
     mEnumeratedNodes = NULL;
     mEnumeratedNodesLen = 0;
     mEnumeratedNodesMaxLen = 0;
-
     // By default, rendezvous messages are sent to the IPv6 link-local, all-nodes multicast address.
     mRendezvousAddr = IPAddress::MakeIPv6WellKnownMulticast(kIPv6MulticastScope_Link, kIPV6MulticastGroup_AllNodes);
 
@@ -5053,6 +5091,272 @@ WEAVE_ERROR WeaveDeviceManager::HandleCertValidationResult(bool isInitiator, WEA
 WEAVE_ERROR WeaveDeviceManager::EndCertValidation(WeaveCertificateSet& certSet, ValidationContext& validContext)
 {
     // Nothing to do
+    return WEAVE_NO_ERROR;
+}
+
+WeaveDeviceManager::WDMDMClient::WDMDMClient() :
+        mBuf(NULL),
+        mpBinding(NULL),
+        mSinkCatalog(ResourceIdentifier(ResourceIdentifier::SELF_NODE_ID),
+                     mSinkCatalogStore, sizeof(mSinkCatalogStore) / sizeof(mSinkCatalogStore[0]))
+{
+    mNumPaths = 1;
+    mPathList.Init(mStorage, ArraySize(mStorage));
+
+    mSinkCatalog.Add(0, &mLocaleSettingsTraitUpdatableDataSink, mTraitHandleSet[0]);
+}
+
+WeaveDeviceManager::WDMDMClient::~WDMDMClient(void)
+{
+    mDeviceMgr = NULL;
+    mpBinding = NULL;
+    mDeviceId = kNodeIdNotSpecified ;
+}
+
+void WeaveDeviceManager::WDMDMClient::EngineEventCallback (void * const aAppState,
+                                                            SubscriptionEngine::EventID aEvent,
+                                                            const SubscriptionEngine::InEventParam & aInParam, SubscriptionEngine::OutEventParam & aOutParam)
+{
+    switch (aEvent)
+    {
+        default:
+            SubscriptionEngine::DefaultEventHandler(aEvent, aInParam, aOutParam);
+            break;
+    }
+}
+
+WEAVE_ERROR WeaveDeviceManager::WDMDMClient::Setup(WeaveDeviceManager *apDeviceMgr, WeaveExchangeManager *aExchangeMgr, uint64_t aDeviceId)
+{
+    WEAVE_ERROR err = WEAVE_NO_ERROR;
+    mDeviceMgr = apDeviceMgr;
+    mDeviceId = aDeviceId;
+    mSubscriptionClient = NULL;
+
+    WeaveLogDetail(DeviceManager, "Setup1");
+    err = SubscriptionEngine::GetInstance()->Init(aExchangeMgr, this, EngineEventCallback);
+    WeaveLogDetail(DeviceManager, "Setup2");
+
+    if (NULL == mpBinding)
+    {
+        mpBinding = aExchangeMgr->NewBinding(BindingEventCallback, this);
+        VerifyOrExit(NULL != mpBinding, err = WEAVE_ERROR_NO_MEMORY);
+        if (mpBinding->CanBePrepared())
+        {
+            err = mpBinding->RequestPrepare();
+            SuccessOrExit(err);
+        }
+    }
+exit:
+    return err;
+}
+
+void WeaveDeviceManager::WDMDMClient::TearDown()
+{
+    if (mBuf != NULL)
+    {
+        PacketBuffer::Free(mBuf);
+        mBuf = 0;
+    }
+}
+
+void WeaveDeviceManager::WDMDMClient::BindingEventCallback (void * const apAppState, const nl::Weave::Binding::EventType aEvent,
+                                                            const nl::Weave::Binding::InEventParam & aInParam, nl::Weave::Binding::OutEventParam & aOutParam)
+{
+
+    WEAVE_ERROR err = WEAVE_NO_ERROR;
+
+    WeaveLogDetail(DeviceManager, "%s: Event(%d)", __func__, aEvent);
+
+    WDMDMClient * const pWDMDMClient = reinterpret_cast<WDMDMClient *>(apAppState);
+
+    switch (aEvent)
+    {
+        case nl::Weave::Binding::kEvent_PrepareRequested:
+            WeaveLogDetail(DeviceManager, "kEvent_PrepareRequested");
+            err = pWDMDMClient->PrepareBinding(pWDMDMClient->mDeviceMgr->mDeviceCon);
+            SuccessOrExit(err);
+            break;
+
+        case nl::Weave::Binding::kEvent_PrepareFailed:
+            err = aInParam.PrepareFailed.Reason;
+            WeaveLogDetail(DeviceManager, "kEvent_PrepareFailed: reason");
+            break;
+
+        case nl::Weave::Binding::kEvent_BindingFailed:
+            err = aInParam.BindingFailed.Reason;
+            WeaveLogDetail(DeviceManager, "kEvent_BindingFailed: reason");
+            break;
+
+        case nl::Weave::Binding::kEvent_BindingReady:
+            WeaveLogDetail(DeviceManager, "kEvent_BindingReady");
+
+            WeaveLogProgress(DeviceManager, "%s", __PRETTY_FUNCTION__);
+
+            break;
+
+        case nl::Weave::Binding::kEvent_DefaultCheck:
+            WeaveLogDetail(DeviceManager, "kEvent_DefaultCheck");
+
+        default:
+            nl::Weave::Binding::DefaultEventHandler(apAppState, aEvent, aInParam, aOutParam);
+    }
+
+exit:
+    if (err != WEAVE_NO_ERROR)
+    {
+        WeaveLogDetail(DeviceManager, "error in BindingEventCallback");
+        pWDMDMClient->mpBinding->Release();
+        pWDMDMClient->mpBinding = NULL;
+    }
+
+    if (pWDMDMClient)
+    {
+        pWDMDMClient->mDeviceMgr->ClearOpState();
+        pWDMDMClient->mDeviceMgr->mOnComplete.General(pWDMDMClient->mDeviceMgr, pWDMDMClient->mDeviceMgr->mAppReqState);
+    }
+}
+
+WEAVE_ERROR WeaveDeviceManager::WDMDMClient::PrepareBinding(WeaveConnection *apDeviceCon)
+{
+    WEAVE_ERROR err = WEAVE_NO_ERROR;
+
+    //VerifyOrExit(apDeviceCon != NULL, err = WEAVE_ERROR_INCORRECT_STATE);
+
+//0x18B4300000000002ull
+    Binding::Configuration bindingConfig = mpBinding->BeginConfiguration()
+            .Target_NodeId(mDeviceId)
+            .Security_None()
+            .Transport_ExistingConnection(apDeviceCon)
+            .Exchange_ResponseTimeoutMsec(kResponseTimeoutMsec);
+    err = bindingConfig.PrepareBinding();
+    //SuccessOrExit(err);
+
+    return err;
+}
+
+WEAVE_ERROR WeaveDeviceManager::SetupDMSession(void* appReqState, CompleteFunct onComplete, ErrorFunct onError)
+{
+    uint64_t deviceId = kNodeIdNotSpecified;
+    GetDeviceId(deviceId);
+
+    mWDMDMClient.Setup(this, mExchangeMgr, deviceId);
+    //WeaveLogProgress(DeviceManager, "%s", __PRETTY_FUNCTION__);
+
+    return WEAVE_NO_ERROR;
+}
+
+WEAVE_ERROR WeaveDeviceManager::TearDownDMSession(void* appReqState, CompleteFunct onComplete, ErrorFunct onError)
+{
+    mWDMDMClient.TearDown();
+    WeaveLogProgress(DeviceManager, "%s", __PRETTY_FUNCTION__);
+
+    ClearOpState();
+    mOnComplete.General(this, mAppReqState);
+
+    return WEAVE_NO_ERROR;
+}
+
+void WeaveDeviceManager::WDMDMClient::ClientEventCallback (void * const aAppState, SubscriptionClient::EventID aEvent,
+                                                        const SubscriptionClient::InEventParam & aInParam, SubscriptionClient::OutEventParam & aOutParam)
+{
+    WDMDMClient * const pWDMDMClient = reinterpret_cast<WDMDMClient *>(aAppState);
+
+    switch (aEvent)
+    {
+    case SubscriptionClient::kEvent_OnExchangeStart:
+        WeaveLogDetail(DeviceManager, "Client->kEvent_OnExchangeStart");
+        break;
+    case SubscriptionClient::kEvent_OnSubscribeRequestPrepareNeeded:
+        WeaveLogDetail(DeviceManager, "Client->kEvent_OnSubscribeRequestPrepareNeeded");
+
+        aOutParam.mSubscribeRequestPrepareNeeded.mPathList = pWDMDMClient->mTraitPaths;
+        aOutParam.mSubscribeRequestPrepareNeeded.mPathListSize = pWDMDMClient->mNumPaths;
+        aOutParam.mSubscribeRequestPrepareNeeded.mNeedAllEvents = true;
+        aOutParam.mSubscribeRequestPrepareNeeded.mLastObservedEventList = NULL;
+        aOutParam.mSubscribeRequestPrepareNeeded.mLastObservedEventListSize = 0;
+        aOutParam.mSubscribeRequestPrepareNeeded.mTimeoutSecMin = 30;
+        aOutParam.mSubscribeRequestPrepareNeeded.mTimeoutSecMax = 3600;
+        break;
+
+    case SubscriptionClient::kEvent_OnSubscriptionEstablished:
+        WeaveLogDetail(DeviceManager, "Client->kEvent_OnSubscriptionEstablished");
+        break;
+    case SubscriptionClient::kEvent_OnNotificationRequest:
+        WeaveLogDetail(DeviceManager, "Client->kEvent_OnNotificationRequest");
+        break;
+    case SubscriptionClient::kEvent_OnNotificationProcessed:
+        WeaveLogDetail(DeviceManager, "Client->kEvent_OnNotificationProcessed");
+        break;
+    case SubscriptionClient::kEvent_OnSubscriptionTerminated:
+        WeaveLogDetail(DeviceManager, "Client->kEvent_OnSubscriptionTerminated. Reason: %u, peer = 0x%" PRIX64 "\n",
+            aInParam.mSubscriptionTerminated.mReason,
+            aInParam.mSubscriptionTerminated.mClient->GetPeerNodeId());
+        break;
+    case SubscriptionClient::kEvent_OnUpdateComplete:
+        if ((aInParam.mUpdateComplete.mReason == WEAVE_NO_ERROR) && (nl::Weave::Profiles::Common::kStatus_Success == aInParam.mUpdateComplete.mStatusCode))
+        {
+            WeaveLogDetail(DeviceManager, "Update: path result: success");
+        }
+        else
+        {
+            WeaveLogDetail(DataManagement, "Update: path failed: %s, %s, tdh %" PRIu16", will %sretry",
+                       ErrorStr(aInParam.mUpdateComplete.mReason),
+                       nl::StatusReportStr(aInParam.mUpdateComplete.mStatusProfileId, aInParam.mUpdateComplete.mStatusCode),
+                       aInParam.mUpdateComplete.mTraitDataHandle,
+                       aInParam.mUpdateComplete.mWillRetry ? "" : "not ");
+        }
+        if (pWDMDMClient)
+        {
+            pWDMDMClient->mDeviceMgr->ClearOpState();
+            pWDMDMClient->mDeviceMgr->mOnComplete.General(pWDMDMClient->mDeviceMgr, pWDMDMClient->mDeviceMgr->mAppReqState);
+        }
+        break;
+    case SubscriptionClient::kEvent_OnNoMorePendingUpdates:
+        WeaveLogDetail(DeviceManager, "Update: no more pending updates");
+        break;
+
+    default:
+        SubscriptionClient::DefaultEventHandler(aEvent, aInParam, aOutParam);
+        break;
+    }
+}
+
+WEAVE_ERROR WeaveDeviceManager::WDMDMClient::InitDMClient(void)
+{
+    WEAVE_ERROR err = WEAVE_NO_ERROR;
+    mTraitPaths[0].mTraitDataHandle = mTraitHandleSet[0];
+    mTraitPaths[0].mPropertyPathHandle = kRootPropertyPathHandle;
+
+    WeaveLogDetail(DeviceManager, "InitDMClient1");
+    if (mSubscriptionClient == NULL)
+    {
+        WeaveLogDetail(DeviceManager, "InitDMClient2");
+        err =  SubscriptionEngine::GetInstance()->NewClient(&mSubscriptionClient,
+                                                            mpBinding,
+                                                            this,
+                                                            ClientEventCallback,
+                                                            &mSinkCatalog,
+                                                            kResponseTimeoutMsec * 2); // max num of msec between subscribe request and subscribe response
+        WeaveLogDetail(DeviceManager, "InitDMClient3");
+        SuccessOrExit(err);
+    }
+
+    mSubscriptionClient->EnableResubscribe(NULL);
+    WeaveLogDetail(DeviceManager, "InitDMClient4");
+
+    mPathList.Clear();
+exit:
+    return WEAVE_NO_ERROR;
+}
+
+WEAVE_ERROR WeaveDeviceManager::SetActiveLocale(void* appReqState, const char *aLocale, CompleteFunct onComplete, ErrorFunct onError)
+{
+    mWDMDMClient.InitDMClient();
+    WeaveLogDetail(DeviceManager, "SetActiveLocale1");
+    mWDMDMClient.mLocaleSettingsTraitUpdatableDataSink.SetProperty(mWDMDMClient.mSubscriptionClient, false, "en-US");
+    WeaveLogDetail(DeviceManager, "SetActiveLocale2");
+    mWDMDMClient.mSubscriptionClient->FlushUpdate();
+    WeaveLogDetail(DeviceManager, "SetActiveLocale3");
     return WEAVE_NO_ERROR;
 }
 
