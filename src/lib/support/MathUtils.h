@@ -87,6 +87,26 @@ constexpr inline uint32_t RoundUp(uint32_t a, uint32_t b)
     return RoundDown(a + b - 1, b);
 }
 
+/**
+ * Number of bits in a byte.
+ */
+#ifndef NBBY
+#define NBBY             8
+#endif
+
+/**
+ * @brief
+ *   Converts value length in bits to length in bytes.
+ *
+ * @param[in] aBits     Value in bits to be converted to bytes.
+ *
+ * @return              Length in bytes.
+ */
+constexpr inline uint32_t BitsToByteLength(uint32_t aBits)
+{
+    return RoundUp(aBits, NBBY) / NBBY;
+}
+
 } // namespace Platform
 } // namespace Weave
 } // namespace nl
